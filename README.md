@@ -1,5 +1,7 @@
 # ACME Salary Management
 
+**Live demo:** _add your deployed URL here_  |  **Demo video:** _add your Loom link here_
+
 Web app for an HR Manager to manage salaries of ~10,000 employees across countries and answer "how do we pay people?".
 
 - Requirements: `docs/REQUIREMENTS.md`
@@ -25,7 +27,7 @@ npm run dev       # /api is proxied to the backend
 
 ## Tests
 ```bash
-cd backend  && npm test    # 49 tests, ~2 s, in-memory SQLite
+cd backend  && npm test    # 53 tests, ~2 s, in-memory SQLite
 cd frontend && npm test    # 12 tests
 ```
 
@@ -34,3 +36,12 @@ cd frontend && npm test    # 12 tests
 |---|---|---|
 | backend | `PORT`, `DB_PATH`, `CORS_ORIGIN` | Server port, SQLite file, allowed frontend origin |
 | frontend | `VITE_API_URL` | Backend URL in production (empty in dev) |
+
+## Docker / deployment
+```bash
+docker build -t acme-salary . && docker run -p 4000:4000 acme-salary   # http://localhost:4000
+```
+One container serves the API and the built frontend, and seeds 10,000 employees on first boot. See `docs/DEPLOYMENT.md` (Render steps and trade-offs).
+
+## Documentation
+`docs/REQUIREMENTS.md` | `docs/DESIGN.md` | `docs/DEPLOYMENT.md` | `docs/AI_USAGE.md` | `docs/prompts/` | `docs/DEMO_SCRIPT.md`

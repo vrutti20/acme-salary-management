@@ -81,3 +81,6 @@ Auth and roles, salary history/audit log, CSV import, live FX rates, Postgres, e
 | Charts | Recharts, Insights page lazy-loaded | Keeps the first page load smaller. |
 | Job title / department input | Free text with suggestions from existing values | Avoids duplicates like "Sr. Engineer" vs "Senior Engineer" without blocking new titles. |
 | UX states | Loading skeletons, empty state, error + retry, delete confirmation | Basic product quality an HR user expects. |
+
+## Deployment decision
+Single Docker service: the API serves the built React app, so there is one URL and no CORS. SQLite lives on the container disk and the database is seeded on first boot. On a free host with an ephemeral disk, changes reset on restart; see `docs/DEPLOYMENT.md` for the production path (persistent disk or Postgres).
