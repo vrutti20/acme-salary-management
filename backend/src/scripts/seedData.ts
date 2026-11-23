@@ -97,3 +97,11 @@ export function seedDatabase(db: DB, count = 10_000, seed = 42): number {
   for (let i = 0; i < rows.length; i += 1000) repo.insertMany(rows.slice(i, i + 1000), now);
   return rows.length;
 }
+
+/** Seeds only when the table is empty. Used on boot so a fresh deploy (ephemeral disk) is never blank. */
+export function seedIfEmpty(db: DB, count = 10_000, seed = 42): boolean {
+  const { n } = db.prepare('SELECT COUNT(*) AS n FROM employees').get() as { n: number };
+  if (n > 0) return false;
+  seedDatabase(db, count, seed);
+  return true;
+}

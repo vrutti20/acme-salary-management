@@ -1,5 +1,7 @@
 import cors from 'cors';
 import express, { ErrorRequestHandler } from 'express';
+import fs from 'fs';
+import path from 'path';
 import { ZodError, z } from 'zod';
 import { DB } from './db';
 import { AppError } from './errors';
@@ -10,7 +12,8 @@ import { InsightsService } from './services/insightsService';
 
 const idSchema = z.coerce.number().int().positive();
 
-export function createApp(db: DB, corsOrigin: string = '*') {
+/** `staticDir`: optional folder with the built frontend, served from the same origin (single-service deploy). */
+export function createApp(db: DB, corsOrigin: string = '*', staticDir?: string) {
   const repo = new EmployeeRepository(db);
   const employees = new EmployeeService(repo);
   const insights = new InsightsService(repo);
@@ -46,6 +49,14 @@ export function createApp(db: DB, corsOrigin: string = '*') {
     const { bucketSizeUsd } = z.object({ bucketSizeUsd: z.coerce.number().int().min(1000).optional() }).parse(req.query);
     res.json(insights.distribution(bucketSizeUsd));
   });
+
+  app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found' }));
+
+  if (staticDir && fs.existsSync(path.join(staticDir, 'index.html'))) {
+    app.use(express.static(staticDir));
+    // Single-page app: any non-API route returns index.html
+    app.get(/^\/(?!api\/).*/, (_req, res) => res.sendFile(path.join(path.resolve(staticDir), 'index.html')));
+  }
 
   const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
     if (err instanceof ZodError) {
