@@ -2,7 +2,7 @@
 
 ## Stack
 - **Backend:** Node.js 22, Express, TypeScript, better-sqlite3 (SQLite), zod (validation), Vitest + supertest
-- **Frontend:** React (Vite, TypeScript), Ant Design, TanStack Query, Ant Design Charts
+- **Frontend:** React (Vite, TypeScript), Ant Design, TanStack Query (server state, caching), Recharts
 
 ## Architecture
 ```
@@ -65,7 +65,19 @@ All well inside the targets in REQUIREMENTS.md (300 ms / 500 ms).
 - API: in-memory SQLite, CRUD, filters, duplicate email, 404, invalid input.
 - Insights: tiny fixed dataset with hand-computed expected values.
 - Seed smoke test with a small count.
-- Frontend: a few component tests (table, filters, form validation).
+- Frontend (Vitest + Testing Library, API mocked): money formatting, form validation / server error mapping, employee table (render, debounced search, error, empty, delete).
 
 ## Future improvements
 Auth and roles, salary history/audit log, CSV import, live FX rates, Postgres, export to Excel.
+
+## Frontend decisions
+| Decision | Chosen | Reason |
+|---|---|---|
+| Server state | TanStack Query | Caching, loading/error states and refetch-after-mutation with very little code. |
+| Filters / sort / pagination | Sent to the API, never done in the browser | 10k rows; keeps the UI fast and consistent with the backend. |
+| Search | Debounced (300 ms) | Avoids one request per keystroke. |
+| Form validation | Antd rules mirror backend rules; server errors (400/409) are mapped back onto fields | Fast feedback, and the server stays the source of truth. |
+| Money display | Local currency and USD side by side | HR sees what the person is paid and can compare across countries. |
+| Charts | Recharts, Insights page lazy-loaded | Keeps the first page load smaller. |
+| Job title / department input | Free text with suggestions from existing values | Avoids duplicates like "Sr. Engineer" vs "Senior Engineer" without blocking new titles. |
+| UX states | Loading skeletons, empty state, error + retry, delete confirmation | Basic product quality an HR user expects. |
