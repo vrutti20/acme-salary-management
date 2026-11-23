@@ -1,6 +1,6 @@
 # ACME Salary Management
 
-**Live demo:** _add your deployed URL here_  |  **Demo video:** _add your Loom link here_
+**Live demo:** https://acme-salary-02fl.onrender.com/ |  **Demo video:** _add your Loom link here_
 
 Web app for an HR Manager to manage salaries of ~10,000 employees across countries and answer "how do we pay people?".
 
