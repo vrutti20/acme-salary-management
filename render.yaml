@@ -1,0 +1,10 @@
+# Render Blueprint: one Docker web service serving API + frontend.
+services:
+  - type: web
+    name: acme-salary
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: AUTO_SEED
+        value: "true"
